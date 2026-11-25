@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>我的学习清单</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>我的学习清单</h1>
+    <p class="subtitle">把今天要学会的内容加进来。</p>
+
+    <form id="task-form">
+      <label for="task-input">新任务</label>
+      <div class="input-row">
+        <input
+          id="task-input"
+          type="text"
+          placeholder="例如：理解 HTML 和 CSS"
+          autocomplete="off"
+        >
+        <button type="submit">添加</button>
+      </div>
+    </form>
+
+    <ul id="task-list"></ul>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
