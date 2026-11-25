@@ -13,17 +13,7 @@ taskForm.addEventListener("submit", (event) => {
   }
 
   const taskItem = document.createElement("li");
-
-  const taskButton = document.createElement("button");
-  taskButton.type = "button";
-  taskButton.className = "task-text";
-  taskButton.textContent = taskText;
-  taskButton.setAttribute("aria-pressed", "false");
-
-  taskButton.addEventListener("click", () => {
-    const isCompleted = taskButton.getAttribute("aria-pressed") === "true";
-    taskButton.setAttribute("aria-pressed", String(!isCompleted));
-  });
+  taskItem.textContent = taskText;
 
   const removeButton = document.createElement("button");
   removeButton.type = "button";
@@ -33,7 +23,7 @@ taskForm.addEventListener("submit", (event) => {
     taskItem.remove();
   });
 
-  taskItem.append(taskButton, removeButton);
+  taskItem.append(removeButton);
   taskList.append(taskItem);
 
   taskForm.reset();
