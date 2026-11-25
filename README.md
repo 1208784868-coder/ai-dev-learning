@@ -22,3 +22,7 @@
 4. 发起 Pull Request 说明改动和验证结果。
 5. 等待自动检查和人工审查。
 6. 检查通过后合并到 main。
+
+## 本地开发环境
+
+项目已克隆到本地电脑，可以使用 Visual Studio Code 编辑，并通过 Live Preview 预览页面。
