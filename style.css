@@ -81,3 +81,22 @@ li button {
   background: #eef2ff;
   color: #2457d6;
 }
+
+.task-text {
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.task-text[aria-pressed="true"] {
+  color: #667085;
+  text-decoration: line-through;
+}
+
+li button:focus-visible {
+  outline: 2px solid #2457d6;
+  outline-offset: 3px;
+}
