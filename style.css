@@ -41,7 +41,7 @@ label {
   gap: 10px;
 }
 
-input {
+input[type="text"] {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d0d5dd;
@@ -57,6 +57,44 @@ button {
   color: white;
   font: inherit;
   cursor: pointer;
+}
+
+.task-priority-options {
+  min-width: 0;
+  margin: 16px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.task-priority-options legend {
+  padding: 0;
+  font-weight: 600;
+}
+
+.task-priority-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-top: 8px;
+}
+
+.task-priority-choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.task-priority-choices input {
+  margin: 0;
+  accent-color: #2457d6;
+}
+
+.task-priority-choices input:focus-visible {
+  outline: 2px solid #2457d6;
+  outline-offset: 3px;
 }
 
 .task-stats {
@@ -106,6 +144,29 @@ li button {
 li button:focus-visible {
   outline: 2px solid #2457d6;
   outline-offset: 3px;
+}
+
+.task-priority {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.task-priority--low {
+  background: #ecfdf3;
+  color: #14633d;
+}
+
+.task-priority--medium {
+  background: #eef2ff;
+  color: #2447a7;
+}
+
+.task-priority--high {
+  background: #fff1f0;
+  color: #9f2d29;
 }
 
 .task-edit-input {
