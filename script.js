@@ -2,12 +2,60 @@ const taskForm = document.querySelector("#task-form");
 const taskInput = document.querySelector("#task-input");
 const taskList = document.querySelector("#task-list");
 const taskStats = document.querySelector("#task-stats");
+const taskStorageKey = "aiDevLearningTasksV1";
+const tasks = loadTasks();
+
+function loadTasks() {
+  let savedTasks;
+  try {
+    savedTasks = JSON.parse(localStorage.getItem(taskStorageKey));
+  } catch {
+    return [];
+  }
+
+  if (!Array.isArray(savedTasks)) {
+    return [];
+  }
+
+  const taskIds = new Set();
+  for (const task of savedTasks) {
+    if (
+      !task ||
+      typeof task.id !== "string" ||
+      task.id.trim() === "" ||
+      taskIds.has(task.id) ||
+      typeof task.taskText !== "string" ||
+      task.taskText.trim() === "" ||
+      typeof task.completed !== "boolean"
+    ) {
+      return [];
+    }
+
+    taskIds.add(task.id);
+  }
+
+  return savedTasks;
+}
+
+function saveTasks() {
+  try {
+    localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+  } catch (error) {
+    console.warn("无法保存任务到浏览器存储。", error);
+  }
+}
+
+function createTaskId() {
+  let id;
+  do {
+    id = crypto.getRandomValues(new Uint32Array(4)).join("-");
+  } while (tasks.some((task) => task.id === id));
+  return id;
+}
 
 function updateTaskStats() {
-  const totalTasks = taskList.querySelectorAll(":scope > li").length;
-  const completedTasks = taskList.querySelectorAll('.task-text[aria-pressed="true"]').length;
-
-  taskStats.textContent = `共 ${totalTasks} 项，已完成 ${completedTasks} 项`;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  taskStats.textContent = `共 ${tasks.length} 项，已完成 ${completedTasks} 项`;
 }
 
 function createTaskButton(label) {
@@ -17,11 +65,11 @@ function createTaskButton(label) {
   return button;
 }
 
-function createTaskItem(taskText) {
+function createTaskItem(task) {
   const taskItem = document.createElement("li");
-  const taskButton = createTaskButton(taskText);
+  const taskButton = createTaskButton(task.taskText);
   taskButton.className = "task-text";
-  taskButton.setAttribute("aria-pressed", "false");
+  taskButton.setAttribute("aria-pressed", String(task.completed));
 
   const editInput = document.createElement("input");
   editInput.type = "text";
@@ -63,7 +111,9 @@ function createTaskItem(taskText) {
       return;
     }
 
-    taskButton.textContent = updatedText;
+    task.taskText = updatedText;
+    taskButton.textContent = task.taskText;
+    saveTasks();
     endEditing();
   }
 
@@ -72,13 +122,14 @@ function createTaskItem(taskText) {
       return;
     }
 
-    const isCompleted = taskButton.getAttribute("aria-pressed") === "true";
-    taskButton.setAttribute("aria-pressed", String(!isCompleted));
+    task.completed = !task.completed;
+    taskButton.setAttribute("aria-pressed", String(task.completed));
     updateTaskStats();
+    saveTasks();
   });
 
   editButton.addEventListener("click", () => {
-    editInput.value = taskButton.textContent;
+    editInput.value = task.taskText;
     setEditing(true);
     editInput.focus();
   });
@@ -98,8 +149,11 @@ function createTaskItem(taskText) {
   cancelButton.addEventListener("click", endEditing);
 
   removeButton.addEventListener("click", () => {
+    const taskIndex = tasks.findIndex((entry) => entry.id === task.id);
+    tasks.splice(taskIndex, 1);
     taskItem.remove();
     updateTaskStats();
+    saveTasks();
   });
 
   setEditing(false);
@@ -116,11 +170,17 @@ taskForm.addEventListener("submit", (event) => {
     return;
   }
 
-  taskList.append(createTaskItem(taskText));
+  const task = { id: createTaskId(), taskText, completed: false };
+  tasks.push(task);
+  taskList.append(createTaskItem(task));
   updateTaskStats();
+  saveTasks();
 
   taskForm.reset();
   taskInput.focus();
 });
 
+for (const task of tasks) {
+  taskList.append(createTaskItem(task));
+}
 updateTaskStats();
