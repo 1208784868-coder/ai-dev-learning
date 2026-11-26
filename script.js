@@ -29,6 +29,7 @@ function loadTasks() {
   }
 
   const taskIds = new Set();
+  let prioritiesChanged = false;
   for (const task of savedTasks) {
     if (
       !task ||
@@ -43,15 +44,23 @@ function loadTasks() {
     }
 
     taskIds.add(task.id);
-    task.priority = normalizePriority(task.priority);
+    const priority = normalizePriority(task.priority);
+    if (task.priority !== priority) {
+      task.priority = priority;
+      prioritiesChanged = true;
+    }
+  }
+
+  if (prioritiesChanged) {
+    saveTasks(savedTasks);
   }
 
   return savedTasks;
 }
 
-function saveTasks() {
+function saveTasks(tasksToSave = tasks) {
   try {
-    localStorage.setItem(taskStorageKey, JSON.stringify(tasks));
+    localStorage.setItem(taskStorageKey, JSON.stringify(tasksToSave));
   } catch (error) {
     console.warn("无法保存任务到浏览器存储。", error);
   }
