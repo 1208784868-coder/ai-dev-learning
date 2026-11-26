@@ -22,6 +22,14 @@
         >
         <button type="submit">添加</button>
       </div>
+      <fieldset class="task-priority-options">
+        <legend>优先级</legend>
+        <div class="task-priority-choices">
+          <label><input type="radio" name="priority" value="low"> 低优先级</label>
+          <label><input type="radio" name="priority" value="medium" checked> 中优先级</label>
+          <label><input type="radio" name="priority" value="high"> 高优先级</label>
+        </div>
+      </fieldset>
     </form>
 
     <p id="task-stats" class="task-stats" role="status">共 0 项，已完成 0 项</p>

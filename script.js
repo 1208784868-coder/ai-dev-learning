@@ -3,7 +3,18 @@ const taskInput = document.querySelector("#task-input");
 const taskList = document.querySelector("#task-list");
 const taskStats = document.querySelector("#task-stats");
 const taskStorageKey = "aiDevLearningTasksV1";
+const priorityLabels = {
+  low: "低优先级",
+  medium: "中优先级",
+  high: "高优先级",
+};
 const tasks = loadTasks();
+
+function normalizePriority(priority) {
+  return typeof priority === "string" && Object.hasOwn(priorityLabels, priority)
+    ? priority
+    : "medium";
+}
 
 function loadTasks() {
   let savedTasks;
@@ -32,6 +43,7 @@ function loadTasks() {
     }
 
     taskIds.add(task.id);
+    task.priority = normalizePriority(task.priority);
   }
 
   return savedTasks;
@@ -71,6 +83,10 @@ function createTaskItem(task) {
   taskButton.className = "task-text";
   taskButton.setAttribute("aria-pressed", String(task.completed));
 
+  const priorityLabel = document.createElement("span");
+  priorityLabel.className = `task-priority task-priority--${task.priority}`;
+  priorityLabel.textContent = priorityLabels[task.priority];
+
   const editInput = document.createElement("input");
   editInput.type = "text";
   editInput.className = "task-edit-input";
@@ -85,7 +101,7 @@ function createTaskItem(task) {
   const actions = document.createElement("div");
   actions.className = "task-actions";
   actions.append(editButton, removeButton, saveButton, cancelButton);
-  taskItem.append(taskButton, editInput, actions);
+  taskItem.append(taskButton, editInput, priorityLabel, actions);
 
   function setEditing(isEditing) {
     taskButton.hidden = isEditing;
@@ -170,7 +186,9 @@ taskForm.addEventListener("submit", (event) => {
     return;
   }
 
-  const task = { id: createTaskId(), taskText, completed: false };
+  const selectedPriority = taskForm.querySelector('input[name="priority"]:checked');
+  const priority = normalizePriority(selectedPriority?.value);
+  const task = { id: createTaskId(), taskText, completed: false, priority };
   tasks.push(task);
   taskList.append(createTaskItem(task));
   updateTaskStats();
